@@ -1,0 +1,4 @@
+# System-level dependencies for the Streamlit app
+# These will be installed using apt-get
+python3-dev
+build-essential 
