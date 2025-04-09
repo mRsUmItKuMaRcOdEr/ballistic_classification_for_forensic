@@ -1,36 +1,42 @@
-# 🔫 Ballistic Classification for Forensic Investigation
+# Ballistic Classification for Forensic Investigation
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Plotly](https://img.shields.io/badge/Plotly-%233F4F75.svg?style=for-the-badge&logo=plotly&logoColor=white)
+This application uses machine learning to predict damage levels based on ballistic characteristics. It analyzes various parameters such as caliber, velocity, mass, and more to provide accurate damage assessments.
 
-A machine learning application that predicts damage levels based on ballistic characteristics for forensic investigations.
+## Deployment on Streamlit Cloud
 
-## 📌 Overview
+To deploy this app on Streamlit Cloud:
 
-This application analyzes various ballistic parameters to:
-- Predict damage levels (Negative, Low, Medium, High)
-- Provide confidence scores for predictions
-- Visualize key factors influencing damage
-- Offer forensic insights for investigation
+1. Create a GitHub repository and push this code to it
+2. Go to [Streamlit Cloud](https://streamlit.io/cloud)
+3. Sign in with your GitHub account
+4. Click "New app"
+5. Select your repository, branch, and main file path (ballistics_app.py)
+6. Click "Deploy"
 
-## ✨ Features
+## Local Development
 
-- **Interactive Dashboard**: User-friendly interface with dark theme
-- **Multiple ML Models**: Random Forest, XGBoost, SVM, KNN, etc.
-- **Comprehensive Visualizations**: 
-  - Radar charts for parameter analysis
-  - Feature importance plots
-  - Confidence level gauges
-- **Detailed Reports**:
-  - Technical specifications
-  - Prediction explanations
-  - Debug information
+To run the app locally:
 
-## 🛠️ Installation
+1. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/ballistic-forensics.git
-cd ballistic-forensics
+2. Run the Streamlit app:
+   ```
+   streamlit run ballistics_app.py
+   ```
+
+## Requirements
+
+The app requires the following packages:
+- streamlit
+- joblib
+- pandas
+- numpy
+- plotly
+- scikit-learn
+- matplotlib
+- seaborn
+
+All dependencies are listed in the requirements.txt file. 
