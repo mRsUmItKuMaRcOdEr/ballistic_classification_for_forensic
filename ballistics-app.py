@@ -12,6 +12,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
+import gzip
 
 def create_streamlit_app(model, preprocessor, class_names, feature_names):
     """Streamlit app with ALL original categories preserved"""
@@ -637,25 +639,72 @@ def main():
 
 if __name__ == "__main__":
     try:
-        # Load models
-        tuned_model = joblib.load('best_model.joblib')
-        preprocessor = joblib.load('preprocessor.joblib') 
-        selector = joblib.load('feature_selector.joblib')
+        # Check if model files exist
+        model_files_exist = all(os.path.exists(f) for f in ['best_model.joblib', 'preprocessor.joblib', 'feature_selector.joblib'])
         
-        # Get features
-        class_names = ['Negative', 'Low', 'Medium', 'High']
-        
-        # Get all feature names from preprocessor
-        all_feature_names = preprocessor.get_feature_names_out()
-        
-        # Get selected feature names based on selector support
-        selected_feature_names = [f for f, s in zip(all_feature_names, selector.support_) if s]
-        
-        print("Loaded features:", selected_feature_names)
-        print("Total features:", len(all_feature_names))
-        print("Selected features:", len(selected_feature_names))
+        if not model_files_exist:
+            st.error("""
+            ## Model files not found
             
-        create_streamlit_app(tuned_model, preprocessor, class_names, selected_feature_names)
+            This app requires model files that are not included in the repository. To run this app:
+            
+            1. Train the model locally using the training script
+            2. Upload the following files to your deployment:
+               - best_model.joblib
+               - preprocessor.joblib
+               - feature_selector.joblib
+            
+            For demonstration purposes, you can use the app with sample data below.
+            """)
+            
+            # Create a simple demo version of the app
+            st.title("Ballistic Classification Demo")
+            st.write("This is a demo version without the trained model.")
+            
+            # Add some sample inputs
+            st.sidebar.header("Sample Parameters")
+            caliber = st.sidebar.slider("Caliber (mm)", 5.0, 15.0, 9.0)
+            velocity = st.sidebar.slider("Velocity (m/s)", 300.0, 1000.0, 500.0)
+            mass = st.sidebar.slider("Mass (g)", 2.0, 20.0, 8.0)
+            
+            if st.sidebar.button("Analyze"):
+                st.write("### Sample Analysis Results")
+                st.write("In a real deployment, this would show the model's prediction.")
+                st.write(f"Parameters analyzed: Caliber={caliber}mm, Velocity={velocity}m/s, Mass={mass}g")
+                
+                # Show a sample visualization
+                import plotly.express as px
+                import pandas as pd
+                
+                data = pd.DataFrame({
+                    'Damage Level': ['Negative', 'Low', 'Medium', 'High'],
+                    'Probability': [0.1, 0.2, 0.5, 0.2]
+                })
+                
+                fig = px.bar(data, x='Damage Level', y='Probability', 
+                            title='Sample Damage Level Probabilities')
+                st.plotly_chart(fig)
+                
+        else:
+            # Load models
+            tuned_model = joblib.load('best_model.joblib')
+            preprocessor = joblib.load('preprocessor.joblib') 
+            selector = joblib.load('feature_selector.joblib')
+            
+            # Get features
+            class_names = ['Negative', 'Low', 'Medium', 'High']
+            
+            # Get all feature names from preprocessor
+            all_feature_names = preprocessor.get_feature_names_out()
+            
+            # Get selected feature names based on selector support
+            selected_feature_names = [f for f, s in zip(all_feature_names, selector.support_) if s]
+            
+            print("Loaded features:", selected_feature_names)
+            print("Total features:", len(all_feature_names))
+            print("Selected features:", len(selected_feature_names))
+                
+            create_streamlit_app(tuned_model, preprocessor, class_names, selected_feature_names)
         
     except Exception as e:
         st.error(f"Failed to load models: {str(e)}")
@@ -665,3 +714,20 @@ if __name__ == "__main__":
             st.write("Preprocessor feature names:", preprocessor.get_feature_names_out())
         if 'selector' in locals():
             st.write("Selector support:", selector.support_)
+
+    # Add a file uploader for model files
+    st.sidebar.header("Upload Model Files")
+    uploaded_file = st.sidebar.file_uploader("Upload feature_selector123.joblib", type=["joblib"])
+
+    if uploaded_file is not None:
+        # Save the uploaded file to a temporary location
+        with open("temp_feature_selector.joblib", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        # Load the model from the temporary file
+        try:
+            with gzip.open("temp_feature_selector.joblib", "rb") as f:
+                selector = joblib.load(f)
+            st.sidebar.success("Model loaded successfully!")
+        except Exception as e:
+            st.sidebar.error(f"Error loading model: {str(e)}")
