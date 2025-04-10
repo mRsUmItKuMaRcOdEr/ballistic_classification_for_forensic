@@ -715,8 +715,5 @@ if __name__ == "__main__":
         if 'selector' in locals():
             st.write("Selector support:", selector.support_)
 
-    # Add a file uploader for model files
-    st.sidebar.header("Upload Model Files")
-    uploaded_file = st.sidebar.file_uploader("Upload feature_selector123.joblib", type=["joblib"])
-
+   
    
