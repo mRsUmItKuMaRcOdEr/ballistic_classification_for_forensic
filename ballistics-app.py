@@ -719,15 +719,4 @@ if __name__ == "__main__":
     st.sidebar.header("Upload Model Files")
     uploaded_file = st.sidebar.file_uploader("Upload feature_selector123.joblib", type=["joblib"])
 
-    if uploaded_file is not None:
-        # Save the uploaded file to a temporary location
-        with open("temp_feature_selector.joblib", "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        
-        # Load the model from the temporary file
-        try:
-            with gzip.open("temp_feature_selector.joblib", "rb") as f:
-                selector = joblib.load(f)
-            st.sidebar.success("Model loaded successfully!")
-        except Exception as e:
-            st.sidebar.error(f"Error loading model: {str(e)}")
+   
